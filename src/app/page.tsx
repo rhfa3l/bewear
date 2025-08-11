@@ -47,8 +47,8 @@ const Home = async () => {
           className="h-auto w-full px-5"
         />
         <ProductList products={newlyCreatedProducts} title="Novos produtos" />
-        <Footer />
       </div>
+      <Footer />
     </>
   );
 };
