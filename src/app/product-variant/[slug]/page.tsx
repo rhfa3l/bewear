@@ -6,12 +6,11 @@ import VariantSelector from "@/app/product-variant/[slug]/components/variant-sel
 import Footer from "@/components/common/footer";
 import { Header } from "@/components/common/header";
 import ProductList from "@/components/common/product-list";
-import { Button } from "@/components/ui/button";
 import { db } from "@/db";
 import { productTable, productVariantTable } from "@/db/schema";
 import { formatCentsToBRL } from "@/helpers/money";
 
-import QuantitySelector from "./components/quantity-selector";
+import ProductAction from "./components/product-actions";
 
 interface ProductVariantPageProps {
   params: Promise<{ slug: string }>;
@@ -38,6 +37,7 @@ const ProductVariantPage = async ({ params }: ProductVariantPageProps) => {
       variants: true,
     },
   });
+
   return (
     <>
       <Header />
@@ -67,15 +67,7 @@ const ProductVariantPage = async ({ params }: ProductVariantPageProps) => {
             {formatCentsToBRL(productVariant.priceInCents)}
           </h3>
         </div>
-        <QuantitySelector />
-        <div className="flex flex-col space-y-4 px-5">
-          <Button variant="outline" size="lg" className="rounded-full">
-            Comprar agora
-          </Button>
-          <Button size="lg" className="rounded-full">
-            Adicionar à sacola
-          </Button>
-        </div>
+        <ProductAction productVariantId={productVariant.id} />
         <div className="px-5">
           <p className="text-shadow-amber-600">
             {productVariant.product.description}
