@@ -37,7 +37,14 @@ export const getCart = async () => {
     return {
       ...newCart,
       cartItems: [],
+      totalPriceInCents: 0,
     };
   }
-  return cart;
+  return {
+    ...cart,
+    totalPriceInCents: cart.cartItems.reduce(
+      (acc, item) => acc + item.productVariant.priceInCents * item.quantity,
+      0,
+    ),
+  };
 };

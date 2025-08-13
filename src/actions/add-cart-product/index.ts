@@ -7,9 +7,9 @@ import { db } from "@/db";
 import { cartItemTable, cartTable } from "@/db/schema";
 import { auth } from "@/lib/auth";
 
-import { addProductToCartSchema } from "./schema";
+import { AddProductToCartSchema, addProductToCartSchema } from "./schema";
 
-export const addProductToCart = async (data: addProductToCartSchema) => {
+export const addProductToCart = async (data: AddProductToCartSchema) => {
   addProductToCartSchema.parse(data);
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -40,7 +40,7 @@ export const addProductToCart = async (data: addProductToCartSchema) => {
   const cartItem = await db.query.cartItemTable.findFirst({
     where: (cartItem, { eq }) =>
       eq(cartItem.cartId, cartId) &&
-      eq(cartItem.productVariantId, productVariant.id),
+      eq(cartItem.productVariantId, data.productVariantId),
   });
   if (cartItem) {
     await db
@@ -52,8 +52,8 @@ export const addProductToCart = async (data: addProductToCartSchema) => {
     return;
   }
   await db.insert(cartItemTable).values({
-    cartId: cartId,
-    productVariantId: productVariant.id,
+    cartId,
+    productVariantId: data.productVariantId,
     quantity: data.quantity,
   });
 };
