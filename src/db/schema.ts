@@ -25,7 +25,7 @@ export const userTable = pgTable("user", {
 });
 
 export const userRelations = relations(userTable, ({ many, one }) => ({
-  shippingAddress: many(shippingAddressTable),
+  shippingAddresses: many(shippingAddressTable),
   cart: one(cartTable, {
     fields: [userTable.id],
     references: [cartTable.userId],
@@ -110,7 +110,7 @@ export const productVariantTable = pgTable("product_variant", {
   id: uuid().primaryKey().defaultRandom(),
   productId: uuid("product_id")
     .notNull()
-    .references(() => productTable.id, { onDelete: "set null" }),
+    .references(() => productTable.id, { onDelete: "cascade" }),
   name: text().notNull(),
   slug: text().notNull().unique(),
   color: text().notNull(),
@@ -121,11 +121,12 @@ export const productVariantTable = pgTable("product_variant", {
 
 export const productVariantRelations = relations(
   productVariantTable,
-  ({ one }) => ({
+  ({ one, many }) => ({
     product: one(productTable, {
       fields: [productVariantTable.productId],
       references: [productTable.id],
     }),
+    cartItems: many(cartItemTable),
   }),
 );
 
@@ -172,6 +173,7 @@ export const cartTable = pgTable("cart", {
     () => shippingAddressTable.id,
     { onDelete: "set null" },
   ),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
 export const cartRelations = relations(cartTable, ({ many, one }) => ({
